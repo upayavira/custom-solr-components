@@ -1,0 +1,88 @@
+<project name="solr-plugin" default="build" >
+  <description>Alamy Solr plugins</description>
+
+  <property name="component.name" value="components"/>
+
+  <property file="local.properties"/>
+  
+  <property file="default.properties"/>
+
+  <path id="solr.classpath">
+    <fileset dir="${solr.app.lib}"/>
+  </path>
+ 
+  <target name="build" depends="init,compile,jar"/>
+  
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${solr.home.lib}"/>
+    <delete dir="${deploy.collection}/conf"/>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build.classes}"/>
+    <mkdir dir="${solr.home.lib}"/>
+  </target>
+
+  <target name="unzip-solr">
+   <unzip src="${solr.zip}" dest="."/>
+  </target>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${src.java}" debug="on" destdir="${build.classes}">
+      <classpath refid="solr.classpath"/>    
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar destfile="${build.jar}"
+         basedir="${build.classes}"/>
+  </target>
+
+  <target name="initialise-configs">
+    <copy todir="${src.config}">
+      <fileset dir="${solr.sample.configs}"/>
+    </copy>
+  </target>
+
+  <target name="deploy" depends="build">
+    <copy file="${build.jar}" todir="${solr.home.lib}"/>
+    <copy todir="${deploy.collection.dir}/conf">
+      <fileset dir="${src.config}"/>
+    </copy>
+    <echo message="name=${deploy.collection}" file="${deploy.collection.dir}/core.properties"/>
+    <copy file="${solr.app.solrxml}" todir="${solr.home}"/>
+  </target>
+
+  <target name="restart" depends="deploy">
+    <chmod file="${solr.app}/bin/solr" perm="+x"/>
+    <exec  executable="${solr.app}/bin/solr">
+      <env key="SOLR_HOME" value="${solr.home}"/>
+      <arg value="restart"/>
+    </exec>
+  </target>
+
+  <target name="stop">
+    <chmod file="${solr.app}/bin/solr" perm="+x"/>
+    <exec  executable="${solr.app}/bin/solr">
+      <arg value="stop"/>
+    </exec>
+  </target>
+  
+ <target name="start" depends="deploy">
+    <chmod file="${solr.app}/bin/solr" perm="+x"/>
+    <exec  executable="${solr.app}/bin/solr">
+      <env key="SOLR_HOME" value="${solr.home}"/>
+      <arg value="start"/>
+    </exec>
+  </target>
+
+  <target name="debug" depends="deploy">
+    <java fork="true" jar="${solr.app}/server/start.jar" dir="${solr.app}/example">
+      <jvmarg value="-Dsolr.solr.home=${solr.home}"/>
+      <jvmarg value="-Xdebug"/>
+      <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000"/>
+    </java>
+  </target>
+
+</project>
