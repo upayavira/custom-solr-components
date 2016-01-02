@@ -20,13 +20,13 @@ Usage
 -----
 This project uses Apache Ant. 
 
-=== Configuring this Build
+### Configuring this Build
 Default properties for Ant are stored in `default.properties`. To 
 override these, create a `local.properties` and place your overridden
 properties in that file. Properties in `local.properties` will take
 precendence.
 
-=== Unpacking Solr
+### Unpacking Solr
 
 Either put a downloaded Zip of Solr 5.4.0 into a `downloads/` directory,
 or create a `local.properties` file that points to your downloads location:
@@ -42,7 +42,7 @@ your components do not depend upon this step because it is
 unnecessary and timeconsuming to re-unzip Solr every time you want
 to recompile your components.
 
-=== Building Your Components
+### Building Your Components
 
 To produce a jar file:
 
@@ -50,7 +50,7 @@ To produce a jar file:
 
 This creates a Jar file in the `build/` directory.
 
-=== Configuring Solr
+### Configuring Solr
 This project assumes you have Solr configs specific to your own
 application. Place these configs into the `src/main/config` 
 directory. You may well need to add configuration for Solr to 
@@ -65,7 +65,7 @@ initial versions for you with:
 already there. Only do it when you don't have any configs of your
 own.**
 
-=== Deploying your Components to a Local Solr
+### Deploying your Components to a Local Solr
 By default, a core called `my-collection` will be created for you.
 To change the name of the default core, add a property to your
 `local.properties` file:
@@ -77,7 +77,7 @@ components enabled. To deploy your components to this local Solr:
 
     ant deploy
 
-=== Running Solr
+### Running Solr
 There are three tasks related to running a local Solr. Their purposes
 should be self-evident:
 
@@ -85,7 +85,7 @@ should be self-evident:
     ant restart
     ant stop
 
-=== Debugging Solr
+### Debugging Solr
 Components can be debugged using a Java IDE such as Eclipse or Idea.
 
 Create a project within your IDE pointing at this codebase. You do not
